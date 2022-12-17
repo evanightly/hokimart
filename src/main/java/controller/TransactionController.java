@@ -56,7 +56,10 @@ public class TransactionController {
         String sql = "SELECT id_transaction FROM transaction ORDER BY id_transaction DESC LIMIT 1";
         st.execute(sql);
         rs = st.getResultSet();
-        rs.next();
-        return rs.getInt("id_transaction");
+        if (!rs.next()) {
+            return 0;
+        } else {
+            return rs.getInt("id_transaction");
+        }
     }
 }

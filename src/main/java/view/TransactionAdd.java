@@ -34,6 +34,10 @@ public class TransactionAdd extends javax.swing.JFrame {
         String[] itemHeaders = {
             "id_item", "id_category", "Title", "Description", "Price", "In Stock", "Category"
         };
+        cartSourceData.clear();
+        while (cartModel.getRowCount() > 0) {
+            cartModel.removeRow(0);
+        }
         DefaultTableModel itemModel = new DefaultTableModel(itemHeaders, 0);
         itemTable.setModel(itemModel);
         ArrayList<Item> sourceData = ItemController.get();
@@ -84,7 +88,8 @@ public class TransactionAdd extends javax.swing.JFrame {
         back = new javax.swing.JMenuItem();
         logout = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("New Transaction");
 
         customer_name.setText("Anonymous");
         customer_name.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -129,9 +134,19 @@ public class TransactionAdd extends javax.swing.JFrame {
         jMenu1.setText("File");
 
         back.setText("Back");
+        back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backActionPerformed(evt);
+            }
+        });
         jMenu1.add(back);
 
         logout.setText("Logout");
+        logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutActionPerformed(evt);
+            }
+        });
         jMenu1.add(logout);
 
         jMenuBar1.add(jMenu1);
@@ -159,7 +174,6 @@ public class TransactionAdd extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(total)
@@ -263,7 +277,6 @@ public class TransactionAdd extends javax.swing.JFrame {
 //            System.out.println(c.getCartQuantity());
 //            System.out.println(c.getCartSubtotal());
 //        }
-
         try {
             int idTransaction = TransactionController.getLastTransactionId() + 1;
             TransactionController.add(idTransaction, idEmployee, customerName, total);
@@ -275,7 +288,8 @@ public class TransactionAdd extends javax.swing.JFrame {
                 }
             }
             this.dispose();
-            new Transactions(loggedEmployee).setVisible(true);
+            Transactions t = new Transactions(loggedEmployee);
+            t.setVisible(true);
         } catch (SQLException ex) {
             Logger.getLogger(TransactionAdd.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -315,6 +329,21 @@ public class TransactionAdd extends javax.swing.JFrame {
     private void customer_nameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_customer_nameMouseClicked
         customer_name.setText("");
     }//GEN-LAST:event_customer_nameMouseClicked
+
+    private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        try {
+            this.dispose();
+            Transactions t = new Transactions(loggedEmployee);
+            t.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(TransactionAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_backActionPerformed
+
+    private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
+       this.dispose();
+       new Login().setVisible(true);
+    }//GEN-LAST:event_logoutActionPerformed
 
     /**
      * @param args the command line arguments

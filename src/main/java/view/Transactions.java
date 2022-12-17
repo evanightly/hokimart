@@ -19,9 +19,10 @@ import model.Transaction;
  */
 public class Transactions extends javax.swing.JFrame {
 
-    public static Cashier loggedEmployee;
-    static final String[] headers = {"id_transaction", "id_employee", "customer_name", "transaction_date", "total"};
-    public static DefaultTableModel model = new DefaultTableModel(headers, 0);
+    static Cashier loggedEmployee;
+    static final String[] headers = {"# Transaction", "Employee Name", "Customer Name", "Transaction Date", "Total"};
+    static DefaultTableModel model = new DefaultTableModel(headers, 0);
+    static ArrayList<Transaction> sourceData;
 
     /**
      * Creates new form Transaction
@@ -29,22 +30,26 @@ public class Transactions extends javax.swing.JFrame {
      * @throws java.sql.SQLException
      */
     public Transactions() throws SQLException {
-
         initComponents();
+        sourceData = TransactionController.get();
+        if (sourceData.size() > 0) {
+            transactionTable.setModel(model);
+            System.out.println("Before Insert: " + sourceData.size());
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
+            }
+            for (Transaction transaction : sourceData) {
+                String[] rowData = {
+                    Integer.toString(transaction.getId_transaction()),
+                    transaction.getEmployee_name(),
+                    transaction.getCustomer_name(),
+                    transaction.getTransaction_date(),
+                    Float.toString(transaction.getTotal())
+                };
+                model.addRow(rowData);
+            }
+        } 
 
-        transactionTable.setModel(model);
-        ArrayList<Transaction> sourceData = TransactionController.get();
-        System.out.println("Before Insert" + sourceData.size());
-        for (Transaction transaction : sourceData) {
-            String[] rowData = {
-                Integer.toString(transaction.getId_transaction()),
-                transaction.getEmployee_name(),
-                transaction.getCustomer_name(),
-                transaction.getTransaction_date(),
-                Float.toString(transaction.getTotal())
-            };
-            model.addRow(rowData);
-        }
     }
 
     public Transactions(Cashier cashier) throws SQLException {
@@ -52,7 +57,6 @@ public class Transactions extends javax.swing.JFrame {
         this.loggedEmployee = cashier;
         System.out.println(loggedEmployee.getName());
         System.out.println(loggedEmployee.getId_employee());
-
         this.loggedEmployeeName.setText("Employee: " + loggedEmployee.getName());
     }
 
@@ -171,8 +175,9 @@ public class Transactions extends javax.swing.JFrame {
     }//GEN-LAST:event_transactionTableMouseClicked
 
     private void newTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newTransactionActionPerformed
+        this.dispose();
         try {
-            this.dispose();
+            sourceData.clear();
             TransactionAdd ta = new TransactionAdd(loggedEmployee);
             ta.setVisible(true);
         } catch (SQLException ex) {
@@ -182,16 +187,16 @@ public class Transactions extends javax.swing.JFrame {
 
     private void deleteTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteTransactionActionPerformed
         int[] selectedRows = transactionTable.getSelectedRows();
+
         for (int selectedRow : selectedRows) {
             try {
-                ArrayList<Transaction> sourceTransactionsData = TransactionController.get();
-                int selectedTransactionId = sourceTransactionsData.get(selectedRow).getId_transaction();
-                TransactionController.delete(selectedTransactionId);
                 ArrayList<Transaction> sourceData = TransactionController.get();
+                int selectedTransactionId = sourceData.get(selectedRow).getId_transaction();
+                TransactionController.delete(selectedTransactionId);
+                sourceData = TransactionController.get();
                 while (model.getRowCount() > 0) {
                     model.removeRow(0);
                 }
-                System.out.println("After Insert" + sourceData.size());
                 for (Transaction transaction : sourceData) {
                     String[] rowData = {
                         Integer.toString(transaction.getId_transaction()),
@@ -206,8 +211,6 @@ public class Transactions extends javax.swing.JFrame {
                 Logger.getLogger(Transactions.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-
     }//GEN-LAST:event_deleteTransactionActionPerformed
 
     /**

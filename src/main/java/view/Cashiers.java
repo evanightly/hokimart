@@ -18,18 +18,23 @@ import model.Cashier;
  */
 public class Cashiers extends javax.swing.JFrame {
 
+    static final String[] headers = {"ID", "Name", "Username", "Password", "Age", "Salary", "Years Experienced", "Transaction Handled"};
+    static DefaultTableModel m = new DefaultTableModel(headers, 0);
+    static ArrayList<Cashier> sourceData;
+
     /**
      * Creates new form Employee
+     *
      * @throws java.sql.SQLException
      */
     public Cashiers() throws SQLException {
         initComponents();
-        String[] headers = {"ID", "Name", "Username", "Password", "Age", "Salary", "Years Experienced", "Transaction Handled"};
-        DefaultTableModel m = new DefaultTableModel(headers, 0);
-        ArrayList<Cashier> sourceData = CashierController.get();
         cashierTable.setModel(m);
+        sourceData = CashierController.get();
+        while (m.getRowCount() > 0) {
+            m.removeRow(0);
+        }
         for (Cashier c : sourceData) {
-
             String[] rowData = {
                 Integer.toString(c.getId_employee()),
                 c.getName(),
@@ -42,7 +47,7 @@ public class Cashiers extends javax.swing.JFrame {
             };
             m.addRow(rowData);
         }
-        
+
     }
 
     /**
@@ -56,11 +61,13 @@ public class Cashiers extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         cashierTable = new javax.swing.JTable();
+        newCashier = new javax.swing.JButton();
+        eliminate = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         logout = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Employees");
 
         cashierTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -77,6 +84,20 @@ public class Cashiers extends javax.swing.JFrame {
             }
         });
         jScrollPane1.setViewportView(cashierTable);
+
+        newCashier.setText("New Cashier");
+        newCashier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newCashierActionPerformed(evt);
+            }
+        });
+
+        eliminate.setText("Eliminate");
+        eliminate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminateActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -98,14 +119,24 @@ public class Cashiers extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(eliminate)
+                        .addGap(18, 18, 18)
+                        .addComponent(newCashier)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newCashier)
+                    .addComponent(eliminate))
                 .addContainerGap())
         );
 
@@ -124,6 +155,38 @@ public class Cashiers extends javax.swing.JFrame {
     private void cashierTableInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_cashierTableInputMethodTextChanged
         // TODO add your handling code here:
     }//GEN-LAST:event_cashierTableInputMethodTextChanged
+
+    private void newCashierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newCashierActionPerformed
+        this.dispose();
+        new CashierAdd().setVisible(true);
+    }//GEN-LAST:event_newCashierActionPerformed
+
+    private void eliminateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminateActionPerformed
+        try {
+            int selectedRow = cashierTable.getSelectedRow();
+            CashierController.delete(sourceData.get(selectedRow).getId_employee());
+            sourceData = CashierController.get();
+            while (m.getRowCount() > 0) {
+                m.removeRow(0);
+            }
+            for (Cashier c : sourceData) {
+                String[] rowData = {
+                    Integer.toString(c.getId_employee()),
+                    c.getName(),
+                    c.getUsername(),
+                    c.getPassword(),
+                    Integer.toString(c.getAge()),
+                    Float.toString(c.getSalary()),
+                    Integer.toString(c.getYears_experienced()),
+                    Integer.toString(c.getTransaction_handled())
+                };
+                m.addRow(rowData);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Cashiers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_eliminateActionPerformed
 
     /**
      * @param args the command line arguments
@@ -169,9 +232,11 @@ public class Cashiers extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable cashierTable;
+    private javax.swing.JButton eliminate;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuItem logout;
+    private javax.swing.JButton newCashier;
     // End of variables declaration//GEN-END:variables
 }
