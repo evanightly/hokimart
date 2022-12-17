@@ -9,6 +9,11 @@
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="itemTable">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Item Table"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="logout">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Logout"/>
@@ -52,6 +57,8 @@
                   <Component id="jScrollPane1" pref="1027" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="deleteTransaction" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="newTransaction" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -71,7 +78,10 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="313" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="newTransaction" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="newTransaction" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="deleteTransaction" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -115,6 +125,14 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Employee : "/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="deleteTransaction">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Delete Selected Transaction"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteTransactionActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

@@ -20,6 +20,8 @@ import model.Transaction;
 public class Transactions extends javax.swing.JFrame {
 
     public static Cashier loggedEmployee;
+    static final String[] headers = {"id_transaction", "id_employee", "customer_name", "transaction_date", "total"};
+    public static DefaultTableModel model = new DefaultTableModel(headers, 0);
 
     /**
      * Creates new form Transaction
@@ -30,20 +32,19 @@ public class Transactions extends javax.swing.JFrame {
 
         initComponents();
 
-        String[] headers = {"id_transaction", "id_employee", "customer_name", "transaction_date", "total"};
-        DefaultTableModel m = new DefaultTableModel(headers, 0);
-        transactionTable.setModel(m);
+        transactionTable.setModel(model);
         ArrayList<Transaction> sourceData = TransactionController.get();
+        System.out.println("Before Insert" + sourceData.size());
         for (Transaction transaction : sourceData) {
             String[] rowData = {
                 Integer.toString(transaction.getId_transaction()),
                 transaction.getEmployee_name(),
                 transaction.getCustomer_name(),
                 transaction.getTransaction_date(),
-                Float.toString(transaction.getTotal())};
-            m.addRow(rowData);
+                Float.toString(transaction.getTotal())
+            };
+            model.addRow(rowData);
         }
-
     }
 
     public Transactions(Cashier cashier) throws SQLException {
@@ -68,8 +69,10 @@ public class Transactions extends javax.swing.JFrame {
         transactionTable = new javax.swing.JTable();
         newTransaction = new javax.swing.JButton();
         loggedEmployeeName = new javax.swing.JLabel();
+        deleteTransaction = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        itemTable = new javax.swing.JMenuItem();
         logout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -92,7 +95,17 @@ public class Transactions extends javax.swing.JFrame {
         loggedEmployeeName.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         loggedEmployeeName.setText("Employee : ");
 
+        deleteTransaction.setText("Delete Selected Transaction");
+        deleteTransaction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteTransactionActionPerformed(evt);
+            }
+        });
+
         jMenu1.setText("File");
+
+        itemTable.setText("Item Table");
+        jMenu1.add(itemTable);
 
         logout.setText("Logout");
         logout.addActionListener(new java.awt.event.ActionListener() {
@@ -116,6 +129,8 @@ public class Transactions extends javax.swing.JFrame {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1027, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(deleteTransaction)
+                        .addGap(18, 18, 18)
                         .addComponent(newTransaction))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(loggedEmployeeName)
@@ -130,7 +145,9 @@ public class Transactions extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(newTransaction)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(newTransaction)
+                    .addComponent(deleteTransaction))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -149,7 +166,6 @@ public class Transactions extends javax.swing.JFrame {
             ArrayList<Transaction> sourceData = TransactionController.get();
             int selectedTransactionId = sourceData.get(selectedRow).getId_transaction();
             new TransactionDetail(selectedTransactionId);
-
         } catch (SQLException e) {
         }
     }//GEN-LAST:event_transactionTableMouseClicked
@@ -163,6 +179,36 @@ public class Transactions extends javax.swing.JFrame {
             Logger.getLogger(Transactions.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_newTransactionActionPerformed
+
+    private void deleteTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteTransactionActionPerformed
+        int[] selectedRows = transactionTable.getSelectedRows();
+        for (int selectedRow : selectedRows) {
+            try {
+                ArrayList<Transaction> sourceTransactionsData = TransactionController.get();
+                int selectedTransactionId = sourceTransactionsData.get(selectedRow).getId_transaction();
+                TransactionController.delete(selectedTransactionId);
+                ArrayList<Transaction> sourceData = TransactionController.get();
+                while (model.getRowCount() > 0) {
+                    model.removeRow(0);
+                }
+                System.out.println("After Insert" + sourceData.size());
+                for (Transaction transaction : sourceData) {
+                    String[] rowData = {
+                        Integer.toString(transaction.getId_transaction()),
+                        transaction.getEmployee_name(),
+                        transaction.getCustomer_name(),
+                        transaction.getTransaction_date(),
+                        Float.toString(transaction.getTotal())
+                    };
+                    model.addRow(rowData);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Transactions.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+
+    }//GEN-LAST:event_deleteTransactionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -205,6 +251,8 @@ public class Transactions extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton deleteTransaction;
+    private javax.swing.JMenuItem itemTable;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;

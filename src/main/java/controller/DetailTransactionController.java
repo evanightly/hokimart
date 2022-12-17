@@ -36,4 +36,14 @@ public class DetailTransactionController {
         }
         return detailTransactions;
     }
+    
+    public static boolean delete(int id_detail_transaction) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        String sql = "DELETE FROM detail_transaction WHERE id_detail_transaction = " + id_detail_transaction;
+        st.executeUpdate(sql);
+        return true;
+    }
+
+    
 }

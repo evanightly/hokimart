@@ -32,6 +32,23 @@ public class TransactionController {
         return transactions;
     }
 
+    public static boolean delete(int id_transaction) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        ResultSet rs;
+        String sql = "SELECT * FROM transaction t JOIN detail_transaction dt ON t.id_transaction = dt.id_transaction WHERE t.id_transaction = " + id_transaction;
+        System.out.println(sql);
+        st.execute(sql);
+        rs = st.getResultSet();
+        while (rs.next()) {
+            System.out.println(rs.getInt("id_detail_transaction"));
+            DetailTransactionController.delete(rs.getInt("id_detail_transaction"));
+        }
+        sql = "DELETE FROM transaction WHERE id_transaction = " + id_transaction;
+        st.executeUpdate(sql);
+        return true;
+    }
+
     public static int getLastTransactionId() throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();

@@ -64,6 +64,18 @@ public class Cashiers extends javax.swing.JFrame {
         setTitle("Employees");
 
         cashierTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        cashierTable.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                cashierTableFocusLost(evt);
+            }
+        });
+        cashierTable.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                cashierTableInputMethodTextChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(cashierTable);
 
         jMenu1.setText("File");
@@ -105,6 +117,13 @@ public class Cashiers extends javax.swing.JFrame {
         this.dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_logoutActionPerformed
+
+    private void cashierTableFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_cashierTableFocusLost
+    }//GEN-LAST:event_cashierTableFocusLost
+
+    private void cashierTableInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_cashierTableInputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cashierTableInputMethodTextChanged
 
     /**
      * @param args the command line arguments
