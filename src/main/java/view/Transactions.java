@@ -18,7 +18,7 @@ import model.Transaction;
  * @author Evan Henderson
  */
 public class Transactions extends javax.swing.JFrame {
-
+    
     static Cashier loggedEmployee;
     static final String[] headers = {"# Transaction", "Employee Name", "Customer Name", "Transaction Date", "Total"};
     static DefaultTableModel model = new DefaultTableModel(headers, 0);
@@ -48,10 +48,10 @@ public class Transactions extends javax.swing.JFrame {
                 };
                 model.addRow(rowData);
             }
-        } 
-
+        }        
+        
     }
-
+    
     public Transactions(Cashier cashier) throws SQLException {
         this();
         this.loggedEmployee = cashier;
@@ -77,6 +77,7 @@ public class Transactions extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         itemTable = new javax.swing.JMenuItem();
+        categoryTable = new javax.swing.JMenuItem();
         logout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -109,7 +110,20 @@ public class Transactions extends javax.swing.JFrame {
         jMenu1.setText("File");
 
         itemTable.setText("Item Table");
+        itemTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemTableActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemTable);
+
+        categoryTable.setText("Category Table");
+        categoryTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                categoryTableActionPerformed(evt);
+            }
+        });
+        jMenu1.add(categoryTable);
 
         logout.setText("Logout");
         logout.addActionListener(new java.awt.event.ActionListener() {
@@ -187,7 +201,7 @@ public class Transactions extends javax.swing.JFrame {
 
     private void deleteTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteTransactionActionPerformed
         int[] selectedRows = transactionTable.getSelectedRows();
-
+        
         for (int selectedRow : selectedRows) {
             try {
                 ArrayList<Transaction> sourceData = TransactionController.get();
@@ -212,6 +226,18 @@ public class Transactions extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_deleteTransactionActionPerformed
+
+    private void itemTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemTableActionPerformed
+        this.dispose();
+        Items itemTable = new Items(loggedEmployee);
+        itemTable.setVisible(true);
+    }//GEN-LAST:event_itemTableActionPerformed
+
+    private void categoryTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryTableActionPerformed
+        this.dispose();
+        Categories ct = new Categories(loggedEmployee);
+        ct.setVisible(true);
+    }//GEN-LAST:event_categoryTableActionPerformed
 
     /**
      * @param args the command line arguments
@@ -254,6 +280,7 @@ public class Transactions extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem categoryTable;
     private javax.swing.JButton deleteTransaction;
     private javax.swing.JMenuItem itemTable;
     private javax.swing.JMenu jMenu1;

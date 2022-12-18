@@ -6,7 +6,6 @@
 
 #### Upcoming feature:
 
-- Delete Transaction
-- CRUD item
-- Delete Employee
+- Create, Update item
 - Update Employee by editing cell
+- Update Category by editing cell

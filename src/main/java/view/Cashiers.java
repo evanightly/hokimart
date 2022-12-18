@@ -67,7 +67,7 @@ public class Cashiers extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         logout = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Employees");
 
         cashierTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
