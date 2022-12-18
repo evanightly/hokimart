@@ -32,6 +32,14 @@ public class CategoryController {
         return items;
     }
 
+    public static boolean update(int id_category, String title) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        String sql = String.format("UPDATE category SET title = '%s' WHERE id_category = %d", title, id_category);
+        st.executeUpdate(sql);
+        return true;
+    }
+
     public static boolean delete(int id_category) throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();

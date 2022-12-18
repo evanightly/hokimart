@@ -5,6 +5,10 @@
 package view;
 
 import controller.CategoryController;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -51,9 +55,26 @@ public class Categories extends javax.swing.JFrame {
                     model.addRow(rowData);
                 }
             }
+
+            categoryTable.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                    if (e.getKeyCode() == 10) {
+                        try {
+                            int selectedRow = categoryTable.getSelectedRow();
+                            int id_category = Integer.parseInt(categoryTable.getModel().getValueAt(selectedRow, 0).toString());
+                            String title = categoryTable.getModel().getValueAt(selectedRow, 1).toString();
+                            CategoryController.update(id_category, title);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            });
         } catch (SQLException ex) {
             Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     public Categories(Cashier employee) {
@@ -135,14 +156,16 @@ public class Categories extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 1, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(deleteCategory)
+                        .addGap(18, 18, 18)
+                        .addComponent(newCategory)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(deleteCategory)
-                .addGap(18, 18, 18)
-                .addComponent(newCategory)
-                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
