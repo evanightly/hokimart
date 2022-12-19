@@ -115,6 +115,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="New Item"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="delete">
       <Properties>
@@ -128,6 +131,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Update Item"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="updateActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

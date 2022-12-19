@@ -5,6 +5,9 @@
 package view;
 
 import controller.CashierController;
+import controller.CategoryController;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -48,6 +51,27 @@ public class Cashiers extends javax.swing.JFrame {
             m.addRow(rowData);
         }
 
+        cashierTable.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                int selectedRow = cashierTable.getSelectedRow();
+                int selectedColumn = cashierTable.getSelectedColumn();
+                int id_employee = Integer.parseInt(cashierTable.getModel().getValueAt(selectedRow, 0).toString());
+                String field, value;
+                String[] fields = {"", "name", "username", "password", "age", "salary", "years_experienced"};
+                if (e.getKeyCode() == 10) {
+                    if(selectedColumn == 0 || selectedColumn > 6) return;
+                    field = fields[selectedColumn];
+                    value = cashierTable.getModel().getValueAt(selectedRow, selectedColumn).toString();
+                    try {
+                        CashierController.update(id_employee, field, value);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Cashiers.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+        });
     }
 
     /**

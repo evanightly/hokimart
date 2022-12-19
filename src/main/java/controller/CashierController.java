@@ -46,6 +46,14 @@ public class CashierController {
         return rs.getInt("id_employee");
     }
 
+    public static boolean update(int id_employee, String field, String value) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        String sql = String.format("UPDATE employee SET %s = '%s' WHERE id_employee = %d", field, value, id_employee);
+        st.executeUpdate(sql);
+        return true;
+    }
+
     public static boolean delete(int id_employee) throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();

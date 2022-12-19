@@ -10,6 +10,14 @@ import model.Item;
 
 public class ItemController {
 
+    public static boolean add(String title, String description, int id_category, float price, int in_stock) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        String sql = String.format("INSERT INTO item (title, description, id_category, price, in_stock) VALUES ('%s', '%s', %d, %f, %d)", title, description, id_category, price, in_stock);
+        st.executeUpdate(sql);
+        return true;
+    }
+    
     public static ArrayList<Item> get() throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();
@@ -36,6 +44,14 @@ public class ItemController {
             items.add(new Item(rs.getInt("id_item"), rs.getInt("id_category"), rs.getString("title"), rs.getString("description"), rs.getFloat("price"), rs.getInt("in_stock"), rs.getString("category"), rs.getInt("in_transaction")));
         }
         return items;
+    }
+    
+    public static boolean update(int id_item, String title, String description, int id_category, float price, int in_stock) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        String sql = String.format("UPDATE item SET title = '%s', description = '%s', id_category = %d, price = %f, in_stock = %d WHERE id_item = %d", title, description, id_category, price, in_stock, id_item);
+        st.executeUpdate(sql);
+        return true;
     }
 
     public static boolean delete(int id_item) throws SQLException {
