@@ -11,14 +11,17 @@ import model.Detail_Transaction;
 public class DetailTransactionController {
 //    SELECT i.title item, c.title category, i.description, i.price, dt.quantity, dt.subtotal FROM transaction t JOIN detail_transaction dt ON t.id_transaction = dt.id_transaction JOIN item i ON dt.id_item = i.id_item JOIN category c ON i.id_category = c.id_category WHERE t.id_transaction = 1;
 
-    public static boolean add(int id_transaction, int id_item, int quantity, float subtotal) throws SQLException {
+    public static boolean add(int id_transaction, int id_item, int quantity, float subtotal, int itemLastStock) throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();
         System.out.println(id_transaction);
         System.out.println(id_item);
         System.out.println(quantity);
         System.out.println(subtotal);
+        System.out.println(itemLastStock);
         String sql = String.format("INSERT INTO detail_transaction (id_transaction, id_item, quantity, subtotal) VALUES(%d, %d, %d, %f)", id_transaction, id_item, quantity, subtotal);
+        st.executeUpdate(sql);
+        sql = String.format("UPDATE item SET in_stock = %d WHERE id_item = %d", itemLastStock, id_item);
         st.executeUpdate(sql);
         return true;
     }
@@ -36,7 +39,7 @@ public class DetailTransactionController {
         }
         return detailTransactions;
     }
-    
+
     public static boolean delete(int id_detail_transaction) throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();
@@ -45,5 +48,4 @@ public class DetailTransactionController {
         return true;
     }
 
-    
 }

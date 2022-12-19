@@ -144,12 +144,12 @@ public class Cashiers extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 765, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(eliminate)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(newCashier)
                         .addGap(18, 18, 18)
-                        .addComponent(newCashier)))
+                        .addComponent(eliminate)
+                        .addGap(0, 567, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(

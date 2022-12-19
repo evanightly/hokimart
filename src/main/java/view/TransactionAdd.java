@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import model.Cashier;
 import model.Detail_Transaction;
 import model.Item;
+import view.components.Popup;
 
 /**
  *
@@ -221,6 +222,7 @@ public class TransactionAdd extends javax.swing.JFrame {
             for (int selectedRow : selectedRows) {
                 System.out.println(selectedRow);
                 int id_item = sourceData.get(selectedRow).getId_item();
+                int item_stock = sourceData.get(selectedRow).getIn_stock();
                 String title = sourceData.get(selectedRow).getTitle();
                 String category = sourceData.get(selectedRow).getCategory();
                 float price = sourceData.get(selectedRow).getPrice();
@@ -233,8 +235,26 @@ public class TransactionAdd extends javax.swing.JFrame {
 //                System.out.println("Category: " + category);
 //                System.out.println("Price: " + price);
 //                System.out.println("Quantity: " + quantity);
-                if (quantity > 0) {
-                    cartSourceData.add(new Detail_Transaction(id_transaction, id_item, quantity, price, subtotal, title, category));
+
+                if (quantity > 0) { // Check if quantity spinner value not null
+                    if (sourceData.get(selectedRow).getIn_stock() >= quantity) { // Check if stocks more than quantity
+                        boolean isInCart = false;
+                        for (Detail_Transaction item : cartSourceData) {
+                            if (item.getCartIdItem() == id_item) {
+                                isInCart = true;
+                            }
+                        }
+                        if (isInCart) {
+                            Popup p = new Popup("Cannot add to cart", String.format("%s already in the cart", title));
+                            p.setVisible(true);
+                        } else {
+                            cartSourceData.add(new Detail_Transaction(id_transaction, id_item, quantity, price, subtotal, title, category, item_stock));
+                        }
+                    } else {
+                        Popup p = new Popup("Insufficient stock", String.format("%s quantity exceeds stock", title));
+                        p.setVisible(true);
+                    }
+
                 }
             }
             while (cartModel.getRowCount() > 0) {
@@ -282,7 +302,7 @@ public class TransactionAdd extends javax.swing.JFrame {
             TransactionController.add(idTransaction, idEmployee, customerName, total);
             for (Detail_Transaction dt : cartSourceData) {
                 try {
-                    DetailTransactionController.add(idTransaction, dt.getCartIdItem(), dt.getCartQuantity(), dt.getCartSubtotal());
+                    DetailTransactionController.add(idTransaction, dt.getCartIdItem(), dt.getCartQuantity(), dt.getCartSubtotal(), dt.getCartItemStock() - dt.getCartQuantity());
                 } catch (SQLException ex) {
                     Logger.getLogger(TransactionAdd.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -341,8 +361,8 @@ public class TransactionAdd extends javax.swing.JFrame {
     }//GEN-LAST:event_backActionPerformed
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed
-       this.dispose();
-       new Login().setVisible(true);
+        this.dispose();
+        new Login().setVisible(true);
     }//GEN-LAST:event_logoutActionPerformed
 
     /**

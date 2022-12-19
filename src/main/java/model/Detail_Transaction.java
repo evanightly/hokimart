@@ -9,7 +9,7 @@ public class Detail_Transaction {
     float cPrice, cSubtotal;
     int cQuantity;
 
-    int cartIdTransaction, cartIdItem, cartQuantity;
+    int cartIdTransaction, cartIdItem, cartQuantity, cartItemStock;
     float cartItemPrice, cartSubtotal;
     String cartItemTitle, cartCategory;
 
@@ -30,7 +30,7 @@ public class Detail_Transaction {
         this.cQuantity = cQuantity;
     }
 
-    public Detail_Transaction(int cartIdTransaction, int cartIdItem, int cartQuantity, float cartItemPrice, float cartSubtotal, String cartItemTitle, String cartCategory) {
+    public Detail_Transaction(int cartIdTransaction, int cartIdItem, int cartQuantity, float cartItemPrice, float cartSubtotal, String cartItemTitle, String cartCategory, int cartItemStock) {
         this.cartIdTransaction = cartIdTransaction;
         this.cartIdItem = cartIdItem;
         this.cartQuantity = cartQuantity;
@@ -38,6 +38,7 @@ public class Detail_Transaction {
         this.cartSubtotal = cartSubtotal;
         this.cartItemTitle = cartItemTitle;
         this.cartCategory = cartCategory;
+        this.cartItemStock = cartItemStock;
     }
 
     public int getCartIdTransaction() {
@@ -86,6 +87,14 @@ public class Detail_Transaction {
 
     public void setCartCategory(String cartCategory) {
         this.cartCategory = cartCategory;
+    }
+
+    public int getCartItemStock() {
+        return cartItemStock;
+    }
+
+    public void setCartItemStock(int cartItemStock) {
+        this.cartItemStock = cartItemStock;
     }
 
     public int getId_detail_transaction() {
@@ -183,5 +192,5 @@ public class Detail_Transaction {
     public void setCartItemPrice(float cartItemPrice) {
         this.cartItemPrice = cartItemPrice;
     }
-    
+
 }
