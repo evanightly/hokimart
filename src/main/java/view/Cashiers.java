@@ -5,7 +5,6 @@
 package view;
 
 import controller.CashierController;
-import controller.CategoryController;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.SQLException;
@@ -25,6 +24,30 @@ public class Cashiers extends javax.swing.JFrame {
     static DefaultTableModel m = new DefaultTableModel(headers, 0);
     static ArrayList<Cashier> sourceData;
 
+    static void resetData() {
+        try {
+            sourceData = CashierController.get();
+            while (m.getRowCount() > 0) {
+                m.removeRow(0);
+            }
+            for (Cashier c : sourceData) {
+                String[] rowData = {
+                    Integer.toString(c.getId_employee()),
+                    c.getName(),
+                    c.getUsername(),
+                    c.getPassword(),
+                    Integer.toString(c.getAge()),
+                    Float.toString(c.getSalary()),
+                    Integer.toString(c.getYears_experienced()),
+                    Integer.toString(c.getTransaction_handled())
+                };
+                m.addRow(rowData);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Cashiers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Creates new form Employee
      *
@@ -33,24 +56,7 @@ public class Cashiers extends javax.swing.JFrame {
     public Cashiers() throws SQLException {
         initComponents();
         cashierTable.setModel(m);
-        sourceData = CashierController.get();
-        while (m.getRowCount() > 0) {
-            m.removeRow(0);
-        }
-        for (Cashier c : sourceData) {
-            String[] rowData = {
-                Integer.toString(c.getId_employee()),
-                c.getName(),
-                c.getUsername(),
-                c.getPassword(),
-                Integer.toString(c.getAge()),
-                Float.toString(c.getSalary()),
-                Integer.toString(c.getYears_experienced()),
-                Integer.toString(c.getTransaction_handled())
-            };
-            m.addRow(rowData);
-        }
-
+        resetData();
         cashierTable.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -60,7 +66,9 @@ public class Cashiers extends javax.swing.JFrame {
                 String field, value;
                 String[] fields = {"", "name", "username", "password", "age", "salary", "years_experienced"};
                 if (e.getKeyCode() == 10) {
-                    if(selectedColumn == 0 || selectedColumn > 6) return;
+                    if (selectedColumn == 0 || selectedColumn > 6) {
+                        return;
+                    }
                     field = fields[selectedColumn];
                     value = cashierTable.getModel().getValueAt(selectedRow, selectedColumn).toString();
                     try {
@@ -189,23 +197,7 @@ public class Cashiers extends javax.swing.JFrame {
         try {
             int selectedRow = cashierTable.getSelectedRow();
             CashierController.delete(sourceData.get(selectedRow).getId_employee());
-            sourceData = CashierController.get();
-            while (m.getRowCount() > 0) {
-                m.removeRow(0);
-            }
-            for (Cashier c : sourceData) {
-                String[] rowData = {
-                    Integer.toString(c.getId_employee()),
-                    c.getName(),
-                    c.getUsername(),
-                    c.getPassword(),
-                    Integer.toString(c.getAge()),
-                    Float.toString(c.getSalary()),
-                    Integer.toString(c.getYears_experienced()),
-                    Integer.toString(c.getTransaction_handled())
-                };
-                m.addRow(rowData);
-            }
+            resetData();
         } catch (SQLException ex) {
             Logger.getLogger(Cashiers.class.getName()).log(Level.SEVERE, null, ex);
         }

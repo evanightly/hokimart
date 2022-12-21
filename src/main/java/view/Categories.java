@@ -7,8 +7,6 @@ package view;
 import controller.CategoryController;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -34,6 +32,24 @@ public class Categories extends javax.swing.JFrame {
 
     static ArrayList<Category> sourceData;
 
+    static void resetData() {
+        try {
+            sourceData = CategoryController.get();
+            while (model.getRowCount() > 0) {
+                model.removeRow(0);
+            }
+            for (Category category : sourceData) {
+                String[] rowData = {
+                    Integer.toString(category.getId_category()),
+                    category.getTitle(),
+                    Integer.toString(category.getIn_item())};
+                model.addRow(rowData);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * Creates new form Categories
      */
@@ -41,9 +57,8 @@ public class Categories extends javax.swing.JFrame {
         try {
             initComponents();
             sourceData = CategoryController.get();
-            if (sourceData.size() > 0) {
+            if (!sourceData.isEmpty()) {
                 categoryTable.setModel(model);
-                System.out.println("Before Insert: " + sourceData.size());
                 while (model.getRowCount() > 0) {
                     model.removeRow(0);
                 }
@@ -205,30 +220,12 @@ public class Categories extends javax.swing.JFrame {
     private void newCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newCategoryActionPerformed
         CategoryAdd ca = new CategoryAdd(this, true);
         ca.setVisible(true);
-        try {
-            sourceData = CategoryController.get();
-            if (!sourceData.isEmpty()) {
-                categoryTable.setModel(model);
-                System.out.println("Before Insert: " + sourceData.size());
-                while (model.getRowCount() > 0) {
-                    model.removeRow(0);
-                }
-                for (Category category : sourceData) {
-                    String[] rowData = {
-                        Integer.toString(category.getId_category()),
-                        category.getTitle(),
-                        Integer.toString(category.getIn_item())};
-                    model.addRow(rowData);
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        categoryTable.setModel(model);
+        resetData();
     }//GEN-LAST:event_newCategoryActionPerformed
 
     private void deleteCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCategoryActionPerformed
         int selectedRow = categoryTable.getSelectedRow();
-
         Category selectedItem = sourceData.get(selectedRow);
         if (selectedItem.getIn_item() > 0) {
             Popup p = new Popup("Integrity Constraint Warning", "This category has interconnected item");
@@ -236,21 +233,7 @@ public class Categories extends javax.swing.JFrame {
         } else {
             try {
                 CategoryController.delete(selectedItem.getId_category());
-                sourceData = CategoryController.get();
-                if (!sourceData.isEmpty()) {
-                    categoryTable.setModel(model);
-                    System.out.println("Before Insert: " + sourceData.size());
-                    while (model.getRowCount() > 0) {
-                        model.removeRow(0);
-                    }
-                    for (Category category : sourceData) {
-                        String[] rowData = {
-                            Integer.toString(category.getId_category()),
-                            category.getTitle(),
-                            Integer.toString(category.getIn_item())};
-                        model.addRow(rowData);
-                    }
-                }
+                resetData();
             } catch (SQLException ex) {
                 Logger.getLogger(Items.class.getName()).log(Level.SEVERE, null, ex);
             }

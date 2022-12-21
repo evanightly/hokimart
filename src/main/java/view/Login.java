@@ -3,6 +3,7 @@ package view;
 import controller.AuthController;
 import model.Cashier;
 import model.Employee;
+import view.components.Popup;
 
 public class Login extends javax.swing.JFrame {
 
@@ -122,6 +123,8 @@ public class Login extends javax.swing.JFrame {
                 this.setVisible(true);
             }
         } catch (Exception e) {
+            Popup p = new Popup("Not Authorized", "Invalid Credentials");
+            p.setVisible(true);
             System.out.println("Invalid Credentials");
             System.out.println(e);
         }

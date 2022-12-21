@@ -58,9 +58,9 @@ public class TransactionAdd extends javax.swing.JFrame {
         cartTable.setModel(cartModel);
     }
 
-    public TransactionAdd(Cashier loggedEmployee) throws SQLException {
+    public TransactionAdd(Cashier employee) throws SQLException {
         this();
-        this.loggedEmployee = loggedEmployee;
+        loggedEmployee = employee;
     }
 
     /**
@@ -228,18 +228,10 @@ public class TransactionAdd extends javax.swing.JFrame {
                 float price = sourceData.get(selectedRow).getPrice();
                 int quantity = Integer.parseInt(this.quantity.getValue().toString());
                 float subtotal = price * quantity;
-//                System.out.println("Id_item: " + id_item);
-//                System.out.println("Id_transaction: " + id_transaction);
-//                System.out.println("Customer Name: " + customer_name);
-//                System.out.println("Title: " + title);
-//                System.out.println("Category: " + category);
-//                System.out.println("Price: " + price);
-//                System.out.println("Quantity: " + quantity);
-
                 if (quantity > 0) { // Check if quantity spinner value not null
                     if (sourceData.get(selectedRow).getIn_stock() >= quantity) { // Check if stocks more than quantity
                         boolean isInCart = false;
-                        for (Detail_Transaction item : cartSourceData) {
+                        for (Detail_Transaction item : cartSourceData) { // Loop to check each item
                             if (item.getCartIdItem() == id_item) {
                                 isInCart = true;
                             }
@@ -249,12 +241,15 @@ public class TransactionAdd extends javax.swing.JFrame {
                             p.setVisible(true);
                         } else {
                             cartSourceData.add(new Detail_Transaction(id_transaction, id_item, quantity, price, subtotal, title, category, item_stock));
+                            itemTable.getSelectionModel().clearSelection();
                         }
                     } else {
                         Popup p = new Popup("Insufficient stock", String.format("%s quantity exceeds stock", title));
                         p.setVisible(true);
                     }
-
+                } else {
+                    Popup p = new Popup("Cannot add to cart", String.format("Quantity must be more than 0"));
+                    p.setVisible(true);
                 }
             }
             while (cartModel.getRowCount() > 0) {
@@ -283,20 +278,12 @@ public class TransactionAdd extends javax.swing.JFrame {
         float total = 0;
         String customerName = customer_name.getText();
         int idEmployee = loggedEmployee.getId_employee();
-
+        if (cartSourceData.isEmpty()) {
+            return;
+        }
         for (Detail_Transaction detail_Transaction : cartSourceData) {
             total += detail_Transaction.getCartSubtotal();
         }
-//        System.out.println("Customer Name: " + customerName);
-//        System.out.println("Total: " + total);
-//        System.out.println("ID Employee: " + idEmployee);
-
-//        for (Detail_Transaction c : cartSourceData) {
-//            System.out.println();
-//            System.out.println(c.getCartIdItem());
-//            System.out.println(c.getCartQuantity());
-//            System.out.println(c.getCartSubtotal());
-//        }
         try {
             int idTransaction = TransactionController.getLastTransactionId() + 1;
             TransactionController.add(idTransaction, idEmployee, customerName, total);
@@ -313,14 +300,6 @@ public class TransactionAdd extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(TransactionAdd.class.getName()).log(Level.SEVERE, null, ex);
         }
-//        try {
-//            TransactionController.add(idEmployee, customerName, total);
-//            for (Detail_Transaction dt : cartSourceData) {
-//            }
-//        } catch (SQLException ex) {
-//            Logger.getLogger(TransactionAdd.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
     }//GEN-LAST:event_submitActionPerformed
 
     private void cartTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartTableMouseClicked

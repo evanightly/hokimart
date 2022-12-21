@@ -29,18 +29,8 @@ public class Items extends javax.swing.JFrame {
     static DefaultTableModel model = new DefaultTableModel(headers, 0);
     static ArrayList<Item> sourceData;
 
-    /**
-     * Creates new form Items
-     */
-    public Items(Cashier employee) {
-        this();
-        this.loggedEmployee = employee;
-    }
-
-    public Items() {
+    static void resetData() {
         try {
-            initComponents();
-            itemTable.setModel(model);
             sourceData = ItemController.getWithConstraint();
             while (model.getRowCount() > 0) {
                 model.removeRow(0);
@@ -60,6 +50,20 @@ public class Items extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Items.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * Creates new form Items
+     */
+    public Items(Cashier employee) {
+        this();
+        loggedEmployee = employee;
+    }
+
+    public Items() {
+        initComponents();
+        itemTable.setModel(model);
+        resetData();
     }
 
     /**
@@ -182,22 +186,7 @@ public class Items extends javax.swing.JFrame {
         } else {
             try {
                 ItemController.delete(selectedItem.getId_item());
-                sourceData = ItemController.getWithConstraint();
-                while (model.getRowCount() > 0) {
-                    model.removeRow(0);
-                }
-                for (Item c : sourceData) {
-                    String[] rowData = {
-                        Integer.toString(c.getId_item()),
-                        c.getTitle(),
-                        c.getCategory(),
-                        c.getDescription(),
-                        Float.toString(c.getPrice()),
-                        Integer.toString(c.getIn_stock()),
-                        Integer.toString(c.getIn_transaction())
-                    };
-                    model.addRow(rowData);
-                }
+                resetData();
             } catch (SQLException ex) {
                 Logger.getLogger(Items.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -226,62 +215,24 @@ public class Items extends javax.swing.JFrame {
     }//GEN-LAST:event_categoryTableActionPerformed
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createActionPerformed
-        try {
-            ItemAdd ia = new ItemAdd(this, true);
-            ia.setVisible(true);
-            sourceData = ItemController.getWithConstraint();
-            while (model.getRowCount() > 0) {
-                model.removeRow(0);
-            }
-            for (Item c : sourceData) {
-                String[] rowData = {
-                    Integer.toString(c.getId_item()),
-                    c.getTitle(),
-                    c.getCategory(),
-                    c.getDescription(),
-                    Float.toString(c.getPrice()),
-                    Integer.toString(c.getIn_stock()),
-                    Integer.toString(c.getIn_transaction())
-                };
-                model.addRow(rowData);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Items.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        ItemAdd ia = new ItemAdd(this, true);
+        ia.setVisible(true);
+        resetData();
     }//GEN-LAST:event_createActionPerformed
 
     private void updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateActionPerformed
-        try {
-            int selectedRow = itemTable.getSelectedRow();
-            Item selectedItem = sourceData.get(selectedRow);
-            int selectedId = selectedItem.getId_item();
-            String selectedCategory = selectedItem.getCategory();
-            ItemUpdate iu = new ItemUpdate(this, true, selectedCategory, selectedId);
-            iu.title.setText(selectedItem.getTitle());
-            iu.description.setText(selectedItem.getDescription());
-            iu.price.setValue(selectedItem.getPrice());
-            iu.stock.setValue(selectedItem.getIn_stock());
-            iu.setVisible(true);
-            
-            sourceData = ItemController.getWithConstraint();
-            while (model.getRowCount() > 0) {
-                model.removeRow(0);
-            }
-            for (Item c : sourceData) {
-                String[] rowData = {
-                    Integer.toString(c.getId_item()),
-                    c.getTitle(),
-                    c.getCategory(),
-                    c.getDescription(),
-                    Float.toString(c.getPrice()),
-                    Integer.toString(c.getIn_stock()),
-                    Integer.toString(c.getIn_transaction())
-                };
-                model.addRow(rowData);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Items.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        int selectedRow = itemTable.getSelectedRow();
+        Item selectedItem = sourceData.get(selectedRow);
+        int selectedId = selectedItem.getId_item();
+        String selectedCategory = selectedItem.getCategory();
+        ItemUpdate iu = new ItemUpdate(this, true, selectedCategory, selectedId);
+        iu.title.setText(selectedItem.getTitle());
+        iu.description.setText(selectedItem.getDescription());
+        iu.price.setValue(selectedItem.getPrice());
+        iu.stock.setValue(selectedItem.getIn_stock());
+        iu.setVisible(true);
+
+        resetData();
     }//GEN-LAST:event_updateActionPerformed
 
     /**
