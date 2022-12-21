@@ -47,11 +47,6 @@ public class Cashier extends Employee implements ICashier {
     }
 
     @Override
-    public boolean isLocalResident() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public String toString() {
         return String.format("Name: %s\nAge: %d\nSalary: %f\nExperience: %d years\nTransaction Handled: %d times", name, age, salary, years_experienced, transaction_handled);
     }

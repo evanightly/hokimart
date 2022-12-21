@@ -8,6 +8,8 @@ import controller.CashierController;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Cashier;
+import view.components.Popup;
 
 /**
  *
@@ -181,9 +183,17 @@ public class CashierAdd extends javax.swing.JFrame {
             int age = Integer.parseInt(cashierAge.getValue().toString());
             float salary = Integer.parseInt(cashierSalary.getValue().toString());
             int years_experienced = Integer.parseInt(cashierYearsExperienced.getValue().toString());
-            CashierController.add(id_employee, name, username, password, age, salary, years_experienced);
-            this.dispose();
-            new Cashiers().setVisible(true);
+            Cashier csh = new Cashier();
+            csh.setAge(age);
+            if (csh.isAdult()) {
+                CashierController.add(id_employee, name, username, password, age, salary, years_experienced);
+                this.dispose();
+                new Cashiers().setVisible(true);
+            } else {
+                Popup p = new Popup("Cannot add cashier", "Employee must be 18+");
+                p.setVisible(true);
+            }
+
         } catch (SQLException ex) {
             Logger.getLogger(CashierAdd.class.getName()).log(Level.SEVERE, null, ex);
         }

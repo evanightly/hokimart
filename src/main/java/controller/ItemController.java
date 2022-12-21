@@ -46,6 +46,21 @@ public class ItemController {
         return items;
     }
     
+    public static ArrayList<Item> getWithConstraint(String title) throws SQLException {
+        Connection db = Connect.getConnection();
+        Statement st = db.createStatement();
+        ResultSet rs;
+        String sql = String.format("SELECT i.*, c.title,  c.title category, COUNT(dt.id_detail_transaction) in_transaction FROM item i JOIN category c ON i.id_category = c.id_category LEFT JOIN detail_transaction dt ON i.id_item = dt.id_item GROUP BY i.id_item HAVING i.title LIKE '%%%s%%'", title);
+        System.out.println(sql);
+        ArrayList<Item> items = new ArrayList<>();
+        st.execute(sql);
+        rs = st.getResultSet();
+        while (rs.next()) {
+            items.add(new Item(rs.getInt("id_item"), rs.getInt("id_category"), rs.getString("title"), rs.getString("description"), rs.getFloat("price"), rs.getInt("in_stock"), rs.getString("category"), rs.getInt("in_transaction")));
+        }
+        return items;
+    }
+    
     public static boolean update(int id_item, String title, String description, int id_category, float price, int in_stock) throws SQLException {
         Connection db = Connect.getConnection();
         Statement st = db.createStatement();

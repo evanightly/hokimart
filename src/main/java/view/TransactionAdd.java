@@ -20,28 +20,36 @@ import view.components.Popup;
 public class TransactionAdd extends javax.swing.JFrame {
 
     static Cashier loggedEmployee;
+
+    static final String[] itemHeaders = {
+        "id_item", "id_category", "Title", "Description", "Price", "In Stock", "Category"
+    };
+
     static final String[] cartHeaders = {
         "Title", "Category", "Price", "Quantity"
     };
 
     static ArrayList<Detail_Transaction> cartSourceData = new ArrayList<>();
     static DefaultTableModel cartModel = new DefaultTableModel(cartHeaders, 0);
+    static DefaultTableModel itemModel = new DefaultTableModel(itemHeaders, 0);
+    static ArrayList<Item> sourceData;
 
     /**
      * Creates new form TransactionAdd
+     *
+     * @throws java.sql.SQLException
      */
     public TransactionAdd() throws SQLException {
         initComponents();
-        String[] itemHeaders = {
-            "id_item", "id_category", "Title", "Description", "Price", "In Stock", "Category"
-        };
         cartSourceData.clear();
+        while (itemModel.getRowCount() > 0) {
+            itemModel.removeRow(0);
+        }
         while (cartModel.getRowCount() > 0) {
             cartModel.removeRow(0);
         }
-        DefaultTableModel itemModel = new DefaultTableModel(itemHeaders, 0);
         itemTable.setModel(itemModel);
-        ArrayList<Item> sourceData = ItemController.get();
+        sourceData = ItemController.get();
         for (Item item : sourceData) {
             String[] rowData = {
                 Integer.toString(item.getId_item()),
@@ -84,6 +92,8 @@ public class TransactionAdd extends javax.swing.JFrame {
         cartTable = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         total = new javax.swing.JLabel();
+        searchItem = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         back = new javax.swing.JMenuItem();
@@ -132,6 +142,20 @@ public class TransactionAdd extends javax.swing.JFrame {
 
         total.setText("TotalValue");
 
+        searchItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                searchItemMouseClicked(evt);
+            }
+        });
+        searchItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchItemActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        jLabel4.setText("Search Item");
+
         jMenu1.setText("File");
 
         back.setText("Back");
@@ -160,35 +184,44 @@ public class TransactionAdd extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(customer_name, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 615, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 615, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(quantity, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(add, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(customer_name, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(searchItem, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(total)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(total)
-                                .addGap(18, 18, 18)
-                                .addComponent(submit)))))
+                        .addComponent(submit)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(customer_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(customer_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
@@ -217,61 +250,56 @@ public class TransactionAdd extends javax.swing.JFrame {
         } catch (SQLException e) {
             System.out.println(e);
         }
-        try {
-            ArrayList<Item> sourceData = ItemController.get();
-            for (int selectedRow : selectedRows) {
-                System.out.println(selectedRow);
-                int id_item = sourceData.get(selectedRow).getId_item();
-                int item_stock = sourceData.get(selectedRow).getIn_stock();
-                String title = sourceData.get(selectedRow).getTitle();
-                String category = sourceData.get(selectedRow).getCategory();
-                float price = sourceData.get(selectedRow).getPrice();
-                int quantity = Integer.parseInt(this.quantity.getValue().toString());
-                float subtotal = price * quantity;
-                if (quantity > 0) { // Check if quantity spinner value not null
-                    if (sourceData.get(selectedRow).getIn_stock() >= quantity) { // Check if stocks more than quantity
-                        boolean isInCart = false;
-                        for (Detail_Transaction item : cartSourceData) { // Loop to check each item
-                            if (item.getCartIdItem() == id_item) {
-                                isInCart = true;
-                            }
+        for (int selectedRow : selectedRows) {
+            System.out.println(selectedRow);
+            int id_item = sourceData.get(selectedRow).getId_item();
+            int item_stock = sourceData.get(selectedRow).getIn_stock();
+            String title = sourceData.get(selectedRow).getTitle();
+            String category = sourceData.get(selectedRow).getCategory();
+            float price = sourceData.get(selectedRow).getPrice();
+            int quantity = Integer.parseInt(this.quantity.getValue().toString());
+            float subtotal = price * quantity;
+            if (quantity > 0) { // Check if quantity spinner value not null
+                if (sourceData.get(selectedRow).getIn_stock() >= quantity) { // Check if stocks more than quantity
+                    boolean isInCart = false;
+                    for (Detail_Transaction item : cartSourceData) { // Loop to check each item
+                        if (item.getCartIdItem() == id_item) {
+                            isInCart = true;
                         }
-                        if (isInCart) {
-                            Popup p = new Popup("Cannot add to cart", String.format("%s already in the cart", title));
-                            p.setVisible(true);
-                        } else {
-                            cartSourceData.add(new Detail_Transaction(id_transaction, id_item, quantity, price, subtotal, title, category, item_stock));
-                            itemTable.getSelectionModel().clearSelection();
-                        }
-                    } else {
-                        Popup p = new Popup("Insufficient stock", String.format("%s quantity exceeds stock", title));
+                    }
+                    if (isInCart) {
+                        Popup p = new Popup("Cannot add to cart", String.format("%s already in the cart", title));
                         p.setVisible(true);
+                    } else {
+                        cartSourceData.add(new Detail_Transaction(id_transaction, id_item, quantity, price, subtotal, title, category, item_stock));
+                        itemTable.getSelectionModel().clearSelection();
                     }
                 } else {
-                    Popup p = new Popup("Cannot add to cart", String.format("Quantity must be more than 0"));
+                    Popup p = new Popup("Insufficient stock", String.format("%s quantity exceeds stock", title));
                     p.setVisible(true);
                 }
+            } else {
+                Popup p = new Popup("Cannot add to cart", String.format("Quantity must be more than 0"));
+                p.setVisible(true);
             }
-            while (cartModel.getRowCount() > 0) {
-                cartModel.removeRow(0);
-            }
-            for (Detail_Transaction detail_Transaction : cartSourceData) {
-                String[] rowData = {
-                    detail_Transaction.getCartItemTitle(),
-                    detail_Transaction.getCartCategory(),
-                    Float.toString(detail_Transaction.getCartItemPrice()),
-                    Integer.toString(detail_Transaction.getCartQuantity())
-                };
-                cartModel.addRow(rowData);
-            }
-            float total = 0;
-            for (Detail_Transaction detail_Transaction : cartSourceData) {
-                total += detail_Transaction.getCartSubtotal();
-            }
-            this.total.setText(Float.toString(total));
-        } catch (SQLException e) {
-            System.out.println(e);
         }
+        while (cartModel.getRowCount() > 0) {
+            cartModel.removeRow(0);
+        }
+        for (Detail_Transaction detail_Transaction : cartSourceData) {
+            String[] rowData = {
+                detail_Transaction.getCartItemTitle(),
+                detail_Transaction.getCartCategory(),
+                Float.toString(detail_Transaction.getCartItemPrice()),
+                Integer.toString(detail_Transaction.getCartQuantity())
+            };
+            cartModel.addRow(rowData);
+        }
+        float total = 0;
+        for (Detail_Transaction detail_Transaction : cartSourceData) {
+            total += detail_Transaction.getCartSubtotal();
+        }
+        this.total.setText(Float.toString(total));
     }//GEN-LAST:event_addActionPerformed
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
@@ -344,6 +372,36 @@ public class TransactionAdd extends javax.swing.JFrame {
         new Login().setVisible(true);
     }//GEN-LAST:event_logoutActionPerformed
 
+    private void searchItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchItemMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchItemMouseClicked
+
+    private void searchItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchItemActionPerformed
+        try {
+            ArrayList<Item> res = ItemController.getWithConstraint(searchItem.getText());
+            if (!res.isEmpty()) {
+                while (itemModel.getRowCount() > 0) {
+                    itemModel.removeRow(0);
+                }
+                sourceData = res;
+                for (Item item : sourceData) {
+                    String[] rowData = {
+                        Integer.toString(item.getId_item()),
+                        Integer.toString(item.getId_category()),
+                        item.getTitle(),
+                        item.getDescription(),
+                        Float.toString(item.getPrice()),
+                        Integer.toString(item.getIn_stock()),
+                        item.getCategory()
+                    };
+                    itemModel.addRow(rowData);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(TransactionAdd.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_searchItemActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -392,12 +450,14 @@ public class TransactionAdd extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuItem logout;
     private javax.swing.JSpinner quantity;
+    private javax.swing.JTextField searchItem;
     private javax.swing.JButton submit;
     private javax.swing.JLabel total;
     // End of variables declaration//GEN-END:variables
