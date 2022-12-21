@@ -1,5 +1,6 @@
 ## Hokimart Retail App
 
+#### Aplikasi retail pendataan transaksi kasir dengan pembeli
 #### Dikembangkan bertujuan untuk memenuhi penugasan akhir semester matakuliah pemrograman berbasis object semester 3 2022
 
 <br>
